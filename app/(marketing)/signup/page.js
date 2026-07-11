@@ -43,11 +43,12 @@ export default function SignupPage() {
         body: JSON.stringify(submitData),
       })
 
-      const data = await res.json()
-
       if (!res.ok) {
-        throw new Error(data.message || 'Registration failed')
+        const errorData = await res.json().catch(() => ({ message: 'Registration failed' }))
+        throw new Error(errorData.message || 'Registration failed')
       }
+
+      const data = await res.json()
 
       if (data.success) {
         router.push('/')

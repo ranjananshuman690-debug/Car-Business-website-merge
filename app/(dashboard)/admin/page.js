@@ -20,7 +20,12 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = (url) =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error('Failed to fetch data')
+      return res.json()
+    })
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('overview')

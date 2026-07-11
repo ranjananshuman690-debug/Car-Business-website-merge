@@ -103,10 +103,12 @@ export default function ProfilePage() {
         body: JSON.stringify(payload),
         credentials: 'include',
       });
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+        const errorData = await res.json().catch(() => ({ message: 'Failed to update profile' }))
+        throw new Error(errorData.message || 'Failed to update profile')
       }
+
+      const data = await res.json()
       setSuccess('Profile updated successfully');
       setIsEditing(false);
       setFormData((prev) => ({

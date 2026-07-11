@@ -80,7 +80,7 @@ export default function AboutPage() {
             <div className="relative group">
               <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-200">
                 <img
-                  src="https://images.unsplash.com/photo-1562141989-c5c79ac8f576?w=800&auto=format&fit=crop&q=80"
+                  src="https://media.istockphoto.com/id/2280757601/photo/saleswoman-holding-tablet-in-modern-car-showroom.jpg?s=1024x1024&w=is&k=20&c=tazNbYKte6ATDQ0G-fzJ3rh9YtuusvBbasT4xEXI0g0="
                   alt="Elite Motors Showroom"
                   className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
                 />

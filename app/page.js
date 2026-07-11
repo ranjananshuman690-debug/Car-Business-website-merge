@@ -38,7 +38,12 @@ const categoryOptions = [
   },
 ]
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = (url) =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error('Failed to fetch data')
+      return res.json()
+    })
 
 export default function CarCollectionPage() {
   const { user, isLoading } = useAuth();
@@ -91,14 +96,16 @@ export default function CarCollectionPage() {
         headers: getAuthHeaders(),
         body: JSON.stringify(bookingForm),
         credentials: 'include',
-      });
+      })
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || 'Failed to save booking');
+        const errorData = await res.json().catch(() => ({ message: 'Unable to submit booking. Please try again.' }))
+        throw new Error(errorData.message || 'Failed to save booking')
       }
 
-      setBookingStatus({ success: true, message: 'Booking submitted successfully. We will contact you shortly.' });
+      const data = await res.json()
+
+      setBookingStatus({ success: true, message: 'Booking submitted successfully. We will contact you shortly.' })
       setShowResults(true);
       setBookingForm({
         firstName: '',
@@ -334,6 +341,7 @@ export default function CarCollectionPage() {
                   <label className="block text-sm text-gray-700 font-medium">First Name</label>
                   <input
                     type="text"
+                    required
                     placeholder="John"
                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all"
                     value={bookingForm.firstName}
@@ -344,6 +352,7 @@ export default function CarCollectionPage() {
                   <label className="block text-sm text-gray-700 font-medium">Last Name</label>
                   <input
                     type="text"
+                    required
                     placeholder="Doe"
                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all"
                     value={bookingForm.lastName}
@@ -357,6 +366,7 @@ export default function CarCollectionPage() {
                   <label className="block text-sm text-gray-700 font-medium">Email Address</label>
                   <input
                     type="email"
+                    required
                     placeholder="john@example.com"
                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all"
                     value={bookingForm.email}
@@ -367,6 +377,7 @@ export default function CarCollectionPage() {
                   <label className="block text-sm text-gray-700 font-medium">Phone Number</label>
                   <input
                     type="tel"
+                    required
                     placeholder="+1 (555) 000-0000"
                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all"
                     value={bookingForm.phone}
@@ -378,11 +389,12 @@ export default function CarCollectionPage() {
               <div className="space-y-2">
                 <label className="block text-sm text-gray-700 font-medium">Preferred Model</label>
                 <div className="relative">
-                  <select
-                    className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all appearance-none"
-                    value={bookingForm.carModel}
-                    onChange={(e) => setBookingForm({ ...bookingForm, carModel: e.target.value })}
-                  >
+                   <select
+                     required
+                     className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all appearance-none"
+                     value={bookingForm.carModel}
+                     onChange={(e) => setBookingForm({ ...bookingForm, carModel: e.target.value })}
+                   >
                     <option value="">Select a vehicle</option>
                     <option value="porsche">Porsche 911 GT3 RS</option>
                     <option value="ferrari">Ferrari F8 Tributo</option>
@@ -428,7 +440,11 @@ export default function CarCollectionPage() {
 
               <button
                 type="submit"
-                className="w-full bg-white text-red-600 border-2 border-red-600 font-bold py-4 rounded-xl hover:bg-red-600 hover:text-white transition-transform duration-600 ease-out transform hover:-translate-y-1 hover:scale-105 shadow-md shadow-red-600/10 hover:shadow-xl hover:shadow-red-600/25 mt-4 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/20 active:scale-100"
+           className="w-full bg-green-600 text-white font-semibold py-4 px-6 rounded-xl 
+border border-green-700 hover:bg-green-700 hover:border-green-800 
+transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 active:scale-[0.98] 
+shadow-md hover:shadow-lg hover:shadow-green-600/30 mt-4 cursor-pointer focus:outline-none 
+focus:ring-4 focus:ring-green-500/40"
               >
                 BooKing CONFIRM
               </button>

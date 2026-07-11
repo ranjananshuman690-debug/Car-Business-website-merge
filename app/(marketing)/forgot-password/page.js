@@ -25,11 +25,12 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ email }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        const errorData = await response.json().catch(() => ({ message: 'Something went wrong' }))
+        throw new Error(errorData.message || 'Something went wrong')
       }
+
+      const data = await response.json()
 
       setMessage(data.message || 'Password reset link sent to your email');
       setEmail('');

@@ -26,11 +26,12 @@ export default function LoginPage() {
         body: JSON.stringify(formData),
       })
 
-      const data = await res.json()
-
       if (!res.ok) {
-        throw new Error(data.message || 'Login failed')
+        const errorData = await res.json().catch(() => ({ message: 'Login failed' }))
+        throw new Error(errorData.message || 'Login failed')
       }
+
+      const data = await res.json()
 
       if (data.success && data.data?.user) {
         login(data.data.user)

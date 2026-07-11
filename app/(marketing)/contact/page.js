@@ -41,6 +41,13 @@ export default function ContactPage() {
         body: JSON.stringify(formData),
         credentials: 'include',
       })
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: 'Something went wrong. Please try again.' }))
+        alert(errorData.message || 'Something went wrong. Please try again.')
+        setIsSubmitting(false)
+        return
+      }
+
       const data = await res.json()
       if (data.success) {
         alert('Thank you for contacting Elite Motors. Our specialist will get back to you within 24 hours.')

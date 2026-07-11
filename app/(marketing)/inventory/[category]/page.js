@@ -57,7 +57,7 @@ const categoryOptions = [
     title: 'Classic',
     slug: 'classic',
     description: 'Timeless machines with heritage in every curve. Each classic car carries provenance, patina, and a story worth preserving for generations.',
-    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     accent: 'from-stone-500 to-stone-700',
     accentText: 'text-stone-600',
     accentBorder: 'border-stone-200',
@@ -104,8 +104,8 @@ export default function CategoryViewPage() {
         setLoading(true)
         setError('')
         const res = await fetch(`/api/cars?category=${encodeURIComponent(currentCategory.title)}`)
+        if (!res.ok) throw new Error('Failed to load cars')
         const data = await res.json()
-        if (!res.ok) throw new Error(data.message || 'Failed to load cars')
         setCars(data.data || [])
       } catch (err) {
         setError(err.message || 'Unable to load this category right now.')

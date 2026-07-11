@@ -6,7 +6,15 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, ChevronDown, ArrowRight, Car, Fuel, Gauge, ShieldCheck } from 'lucide-react'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = async (url) => {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Failed to fetch data')
+  const contentType = res.headers.get('content-type')
+  if (!contentType || !contentType.includes('application/json')) {
+    throw new Error('Unexpected response format')
+  }
+  return res.json()
+}
 
 const categoryOptions = [
   {

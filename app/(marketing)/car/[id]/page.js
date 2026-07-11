@@ -18,7 +18,12 @@ import {
   ArrowRight
 } from 'lucide-react'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = (url) =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error('Failed to fetch data')
+      return res.json()
+    })
 
 export default function CarDetailPage() {
   const params = useParams()
