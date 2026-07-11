@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Car, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -18,6 +19,8 @@ export default function SignupPage() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -51,8 +54,10 @@ export default function SignupPage() {
       const data = await res.json()
 
       if (data.success) {
+        if (data.data?.user) {
+          login(data.data.user)
+        }
         router.push('/')
-        router.refresh()
       }
     } catch (err) {
       setError(err.message)

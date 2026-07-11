@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { flushSync } from 'react-dom'
 import { getClientToken } from '@/lib/auth'
 
 const AuthContext = createContext()
@@ -42,29 +43,10 @@ export function AuthProvider({ children }) {
     checkAuth()
   }, [])
 
-  const login = async (userData) => {
-    setUser(userData)
-
-    try {
-      const headers = { 'Content-Type': 'application/json' }
-      const token = getClientToken()
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
-
-      const res = await fetch('/api/auth/me', {
-        method: 'GET',
-        headers,
-        credentials: 'include',
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-        setUser(data.data ?? userData)
-      }
-    } catch {
-      // keep the provided userData on transient failure
-    }
+  const login = (userData) => {
+    flushSync(() => {
+      setUser(userData)
+    })
   }
 
   const logout = async () => {
@@ -77,7 +59,9 @@ export function AuthProvider({ children }) {
     } catch (e) {
       console.error('Logout error:', e)
     } finally {
-      setUser(null)
+      flushSync(() => {
+        setUser(null)
+      })
       router.push('/')
     }
   }

@@ -38,7 +38,6 @@ export default function LoginPage() {
         const role = data.data.user.role
         const targetRoute = role === 'admin' || role === 'superadmin' ? '/admin' : '/user'
         await router.push(targetRoute)
-        router.refresh()
       }
     } catch (err) {
       setError(err.message)

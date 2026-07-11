@@ -42,7 +42,6 @@ export default function AdminPage() {
 
   const handleLogout = () => {
     logout()
-    router.push('/login')
   }
 
   if (isLoading || !user) {

@@ -19,7 +19,6 @@ export default function UserDashboardPage() {
 
   const handleLogout = () => {
     logout()
-    router.push('/login')
   }
 
   if (isLoading || !user) {
