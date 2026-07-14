@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
-import { withFileUpload, parseFormData } from '@/proxy/upload'
 import { saveFile, generateFilename, isAllowedFileType, getFileSizeLimit } from '@/lib/upload'
 
 export async function POST(request) {

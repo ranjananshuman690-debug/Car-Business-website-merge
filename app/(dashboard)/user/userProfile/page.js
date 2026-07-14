@@ -8,6 +8,7 @@ import { User, Mail, Phone, Shield, Calendar, Lock, Save, X, ArrowLeft } from 'l
 
 import { useAuth } from '@/context/AuthContext';
 import { getAuthHeaders } from '@/lib/auth';
+import ProfilePictureUpload from '@/components/ProfilePictureUpload';
 
 const getAuthFetcher = (url) => {
   const headers = getAuthHeaders();
@@ -152,9 +153,12 @@ export default function UserProfilePage() {
         <div className="grid gap-8">
           <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
             <div className="flex items-start gap-6">
-              <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-red-600/30 shrink-0">
-                {(profile.firstName || profile.lastName) ? `${profile.firstName}${profile.lastName}`.charAt(0).toUpperCase() : 'U'}
-              </div>
+              <ProfilePictureUpload
+                profilePicture={profile.profilePicture}
+                userName={`${profile.firstName} ${profile.lastName}`}
+                size="lg"
+                onSuccess={() => mutate()}
+              />
               <div className="flex-1">
                 <h2 className="text-2xl font-semibold text-gray-900">{profile.firstName} {profile.lastName}</h2>
                 <span className="inline-block mt-2 px-3 py-1 bg-red-50 text-red-700 border border-red-200 rounded-full text-xs font-medium capitalize">

@@ -1,7 +1,7 @@
 import { successResponse, errorResponse } from '@/lib/apiResponse'
 import inquiryService from '@/services/inquiryService'
-import { withAdmin } from '@/proxy/auth'
-import { withErrorHandling } from '@/proxy/errorHandler'
+import { withAdmin } from '@/middleware/auth'
+import { withErrorHandling } from '@/middleware/errorHandler'
 import { validateInquiryData } from '@/lib/validation'
 
 export const createInquiry = withErrorHandling(async (req) => {

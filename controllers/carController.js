@@ -1,7 +1,7 @@
 import { successResponse, errorResponse, paginatedResponse } from '@/lib/apiResponse'
 import carService from '@/services/carService'
-import { withAdmin } from '@/proxy/auth'
-import { withErrorHandling } from '@/proxy/errorHandler'
+import { withAdmin } from '@/middleware/auth'
+import { withErrorHandling } from '@/middleware/errorHandler'
 import { validateCarData } from '@/lib/validation'
 
 export const getCars = withErrorHandling(async (req) => {

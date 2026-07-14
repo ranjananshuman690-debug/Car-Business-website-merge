@@ -12,6 +12,31 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const refreshUser = async () => {
+    try {
+      const headers = { 'Content-Type': 'application/json' }
+      const token = getClientToken()
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
+      const res = await fetch('/api/auth/me', {
+        method: 'GET',
+        headers,
+        credentials: 'include',
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setUser(data.data)
+        return data.data
+      }
+    } catch (error) {
+      console.error('Failed to refresh user:', error)
+    }
+    return null
+  }
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -67,7 +92,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

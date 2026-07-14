@@ -33,7 +33,6 @@ export async function registerHandler(request) {
     const isProduction = process.env.NODE_ENV === 'production'
 
     response.cookies.set('token', token, {
-      httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
@@ -79,7 +78,6 @@ export async function loginHandler(request) {
     const isProduction = process.env.NODE_ENV === 'production'
 
     response.cookies.set('token', token, {
-      httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,

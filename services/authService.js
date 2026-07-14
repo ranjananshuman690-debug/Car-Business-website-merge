@@ -4,6 +4,7 @@ import { generateToken } from '@/lib/utils'
 import { validateEmail, validateRequired, validateMinLength } from '@/lib/validation'
 import { getEmailTemplate, personalizeTemplate } from '@/utils/email'
 import { generateResetToken } from '@/utils/hash'
+import cloudinary from '@/lib/cloudinary'
 
 export async function register(data) {
   const { firstName, lastName, email, password, phone } = data
@@ -130,12 +131,70 @@ export async function getMe(userId) {
     email: user.email,
     phone: user.phone,
     role: user.role,
+    profilePicture: user.profilePicture || '',
     createdAt: user.createdAt,
   }
 
   return {
     success: true,
     data: userWithoutPassword,
+  }
+}
+
+export async function updateProfilePicture(userId, fileBuffer, filename, oldPublicId) {
+  if (oldPublicId) {
+    try {
+      await cloudinary.uploader.destroy(oldPublicId)
+    } catch (error) {
+      console.error('Failed to delete old profile picture from Cloudinary:', error)
+    }
+  }
+
+  const uploadResult = await new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        folder: 'elite-motors/profile-pictures',
+        public_id: `user-${userId}`,
+        overwrite: true,
+        transformation: [
+          { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+          { quality: 'auto', fetch_format: 'auto' },
+        ],
+        resource_type: 'image',
+      },
+      (error, result) => {
+        if (error) reject(error)
+        else resolve(result)
+      }
+    ).end(fileBuffer)
+  })
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      profilePicture: uploadResult.secure_url,
+      cloudinaryPublicId: uploadResult.public_id,
+    },
+    { new: true }
+  ).select('-password')
+
+  if (!updatedUser) {
+    return { success: false, message: 'User not found' }
+  }
+
+  return {
+    success: true,
+    data: {
+      _id: updatedUser._id.toString(),
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      role: updatedUser.role,
+      profilePicture: updatedUser.profilePicture,
+      createdAt: updatedUser.createdAt,
+    },
+    message: 'Profile picture updated successfully',
   }
 }
 
